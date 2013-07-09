@@ -5,11 +5,11 @@
     </string>
     <string name="action_settings" >Settings
     </string>
-    <string name="title_section1" >Livros
+    <string name="title_section1" >Catálogo
     </string>
-    <string name="title_section2" >Autores
+    <string name="title_section2" >Meus Livros
     </string>
-    <string name="title_section3" >Livros do autor
+    <string name="title_section3" >Opções
     </string>
 
 </resources>

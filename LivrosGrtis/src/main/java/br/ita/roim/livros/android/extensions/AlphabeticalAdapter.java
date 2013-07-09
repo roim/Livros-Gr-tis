@@ -3,27 +3,33 @@ package br.ita.roim.livros.android.extensions;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.SectionIndexer;
+import br.ita.roim.livros.database.Book;
 
 import java.util.*;
 
-public class AlphabeticalAdapter extends ArrayAdapter<String> implements SectionIndexer
+public class AlphabeticalAdapter extends ArrayAdapter<Book> implements SectionIndexer
 {
     private HashMap<String, Integer> alphaIndexer;
     private String[] sections;
+    private List<Book> mData;
+    private ArrayList<String> sectionList;
 
-    public AlphabeticalAdapter(Context c, int resource, List<String> data)
+    public AlphabeticalAdapter(Context c, int resource, List<Book> data)
     {
         super(c, resource, data);
+
+        mData = data;
         alphaIndexer = new HashMap<String, Integer>();
+
         for (int i = 0; i < data.size(); i++)
         {
-            String s = data.get(i).substring(0, 1).toUpperCase();
+            String s = data.get(i).toString().substring(0, 1).toUpperCase();
             if (!alphaIndexer.containsKey(s))
                 alphaIndexer.put(s, i);
         }
 
         Set<String> sectionLetters = alphaIndexer.keySet();
-        ArrayList<String> sectionList = new ArrayList<String>(sectionLetters);
+        sectionList = new ArrayList<String>(sectionLetters);
         Collections.sort(sectionList);
         sections = new String[sectionList.size()];
         for (int i = 0; i < sectionList.size(); i++)
@@ -32,12 +38,15 @@ public class AlphabeticalAdapter extends ArrayAdapter<String> implements Section
 
     public int getPositionForSection(int section)
     {
+        if (section >= sections.length) return alphaIndexer.get(sections[section-1]);
+
         return alphaIndexer.get(sections[section]);
     }
 
     public int getSectionForPosition(int position)
     {
-        return 1;
+        String firstletter = mData.get(position).toString().substring(0, 1);
+        return sectionList.indexOf(firstletter);
     }
 
     public Object[] getSections()
