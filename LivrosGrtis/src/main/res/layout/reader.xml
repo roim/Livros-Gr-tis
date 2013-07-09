@@ -24,14 +24,14 @@
                 android:layout_height="wrap_content"
                 android:text="Anterior"
                 android:id="@+id/buttonAnt"
-                android:onClick="voltaPagina" android:layout_alignParentLeft="true"
+                android:onClick="backPage" android:layout_alignParentLeft="true"
                 android:layout_alignTop="@+id/buttonProx"/>
         <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Próxima"
                 android:id="@+id/buttonProx"
-                android:onClick="avancaPagina"
+                android:onClick="advancePage"
                 android:layout_alignParentLeft="true" android:layout_marginLeft="103dp"
                 android:layout_alignParentBottom="true"/>
     </RelativeLayout>

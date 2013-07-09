@@ -17,6 +17,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Activity to read a book in epub format. It reads the book passed as input
+ * through the "book" parameter of the intent.
+ */
 public class BookReader extends FragmentActivity {
     private String name;
     private int chapter;
@@ -47,6 +51,8 @@ public class BookReader extends FragmentActivity {
         res = book.getContents();
 
         scrollView = (ScrollView) findViewById(R.id.scrollView);
+
+        // Hack to disable scrolling.
         scrollView.setOnTouchListener(new View.OnTouchListener() {
 
             @Override
@@ -76,11 +82,11 @@ public class BookReader extends FragmentActivity {
     private void navigateTo(int dest_chapter, int dest_page) {
         navigateTo(dest_chapter);
         for (int i = 1; i < dest_page; i++) {
-            avancaPagina(null);
+            advancePage(null);
         }
     }
 
-    public void voltaPagina(View view) {
+    public void backPage(View view) {
         int pos = scrollView.getScrollY();
         scrollView.scrollBy(0, -scrollView.getHeight());
         page--;
@@ -90,7 +96,7 @@ public class BookReader extends FragmentActivity {
         }
     }
 
-    public void avancaPagina(View view) {
+    public void advancePage(View view) {
         int pos = scrollView.getScrollY();
         scrollView.scrollBy(0, scrollView.getHeight());
         page++;
