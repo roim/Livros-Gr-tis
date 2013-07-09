@@ -1,5 +1,9 @@
 package br.ita.roim.livros;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.*;
 
 import android.app.ActionBar;
@@ -10,16 +14,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.view.Gravity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import br.ita.roim.livros.android.extensions.AlphabeticalAdapter;
+import br.ita.roim.livros.database.GutIndexParser;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -76,6 +79,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                             .setText(mSectionsPagerAdapter.getPageTitle(i))
                             .setTabListener(this));
         }
+
+        LoadBooks();
     }
 
     @Override
@@ -185,6 +190,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
-
-
+    public void LoadBooks() {
+        // The InputStream opens the resourceId and sends it to the buffer
+        InputStream is = this.getResources().openRawResource(R.raw.gutindex);
+        GutIndexParser gip = new GutIndexParser(is);
+        gip.parse();
+    }
 }
