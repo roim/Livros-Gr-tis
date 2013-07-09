@@ -1,17 +1,11 @@
 package br.ita.roim.livros;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.text.Html;
-import android.text.Spanned;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
@@ -19,12 +13,21 @@ import nl.siegmann.epublib.epub.EpubReader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class BookReader extends FragmentActivity {
+    private int position;
+
+    private ScrollView scrollView;
+    private TextView textView;
+    private List<Resource> res;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.reader);
+
+        position = 0;
 
         InputStream epubInputStream;
         Book book = null;
@@ -36,52 +39,43 @@ public class BookReader extends FragmentActivity {
             e.printStackTrace();
         }
 
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
-        PagerAdapter mPagerAdapter = new BookPager(getSupportFragmentManager(), book);
-        pager.setAdapter(mPagerAdapter);
+        res = book.getContents();
+
+        scrollView = (ScrollView) findViewById(R.id.scrollView);
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return true;
+            }
+        });
+
+        textView = (TextView) findViewById(R.id.textView);
+        switchChapter(0);
+
     }
 
-    class BookPager extends FragmentStatePagerAdapter {
-        private Book book;
+    private void switchChapter(int dest) {
+        position = dest;
+        try {
+            textView.setText(Html.fromHtml( new String( res.get(dest).getData() )));
+        } catch (IOException e) {}
+        scrollView.scrollTo(0,0);
+    }
 
-        public BookPager(FragmentManager fm, Book book) {
-            super(fm);
-            this.book = book;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return new PageFragment(book.getContents().get(position));
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
+    public void voltaPagina(View view) {
+        int pos = scrollView.getScrollY();
+        scrollView.scrollBy(0, -scrollView.getHeight());
+        if (scrollView.getScrollY() == pos && position != 0) {
+            switchChapter(position-1);
         }
     }
 
-    class PageFragment extends Fragment {
-        private Resource res;
-
-        public PageFragment(Resource res) {
-            super();
-            this.res = res;
-        }
-
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.book_page, container, false);
-
-            TextView textView = (TextView) rootView.findViewById(R.id.textView);
-
-            Spanned display = null;
-            try {
-                display = Html.fromHtml( new String(res.getData()) );
-            } catch (IOException e) {}
-
-            textView.setText(display);
-
-            return rootView;
+    public void avancaPagina(View view) {
+        int pos = scrollView.getScrollY();
+        scrollView.scrollBy(0, scrollView.getHeight());
+        if (scrollView.getScrollY() == pos && position + 1 < res.size()) {
+            switchChapter(position+1);
         }
     }
 }

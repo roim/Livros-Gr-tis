@@ -5,10 +5,34 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="500dp"
+            android:id="@+id/scrollView"
+            android:scrollbars="none">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/textView"/>
+    </ScrollView>
+    <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="center">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Anterior"
+                android:id="@+id/buttonAnt"
+                android:onClick="voltaPagina" android:layout_alignParentLeft="true"
+                android:layout_alignTop="@+id/buttonProx"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Próxima"
+                android:id="@+id/buttonProx"
+                android:onClick="avancaPagina"
+                android:layout_alignParentLeft="true" android:layout_marginLeft="103dp"
+                android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
 </LinearLayout>
