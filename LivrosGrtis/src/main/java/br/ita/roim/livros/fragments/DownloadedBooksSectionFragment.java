@@ -9,18 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import br.ita.roim.livros.BookReader;
 import br.ita.roim.livros.R;
 import br.ita.roim.livros.android.extensions.AlphabeticalAdapter;
 import br.ita.roim.livros.database.Book;
 import br.ita.roim.livros.database.DownloadedBooksDatabase;
-import br.ita.roim.livros.BookReader;
 
 import java.util.ArrayList;
 
 public class DownloadedBooksSectionFragment extends Fragment {
 
     public static final String ARG_SECTION_NUMBER = "section_number";
-    private Context mContext;
+    private final Context mContext;
     private ArrayList<Book> mBooks;
     private View rootView;
 

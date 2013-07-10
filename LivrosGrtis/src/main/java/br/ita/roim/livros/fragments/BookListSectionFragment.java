@@ -19,8 +19,8 @@ import java.util.ArrayList;
 public class BookListSectionFragment extends Fragment {
 
     public static final String ARG_SECTION_NUMBER = "section_number";
-    private Context mContext;
-    private ArrayList<Book> mBooks;
+    private final Context mContext;
+    private final ArrayList<Book> mBooks;
 
     public BookListSectionFragment(Context c, ArrayList<Book> books) {
         mContext = c;

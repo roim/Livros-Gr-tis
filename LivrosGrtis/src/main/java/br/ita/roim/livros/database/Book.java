@@ -24,7 +24,7 @@ public class Book implements Serializable {
         return name;
     }
 
-    public void setName(String name) {
+    void setName(String name) {
         this.name = name;
     }
 
@@ -32,7 +32,7 @@ public class Book implements Serializable {
         return author;
     }
 
-    public void setAuthor(String author) {
+    void setAuthor(String author) {
         this.author = author;
     }
 
@@ -40,7 +40,7 @@ public class Book implements Serializable {
         return language;
     }
 
-    public void setLanguage(String language) {
+    void setLanguage(String language) {
         this.language = language;
     }
 
@@ -48,7 +48,7 @@ public class Book implements Serializable {
         return ID;
     }
 
-    public void setID(int ID) {
+    void setID(int ID) {
         this.ID = ID;
     }
 }

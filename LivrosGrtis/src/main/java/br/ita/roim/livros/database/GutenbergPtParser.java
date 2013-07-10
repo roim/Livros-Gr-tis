@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Matcher;
@@ -36,7 +35,7 @@ public class GutenbergPtParser {
             int id = -1;
 
             Pattern bookAuthor = Pattern.compile("<h2><a .*></a><a .*>(.*)</a></h2>");
-            Pattern bookTitle = Pattern.compile("  <li class=\"pgdbetext\"><a href=\"/ebooks/([0-9]+)[abcdeABCDE]*\">(.*)</a>.*");
+            Pattern bookTitle = Pattern.compile(" *<li class=\"pgdbetext\"><a href=\"/ebooks/([0-9]+)\">(.*)</a>.*");
 
             while ((readLine = br.readLine()) != null) {
                 Matcher matchAuthor = bookAuthor.matcher(readLine);
@@ -61,7 +60,7 @@ public class GutenbergPtParser {
             br.close();
 
         } catch (IOException e) {
-            for (int i = 0; i < 20; ++i ) Log.d("ERROR", e.getMessage());
+            for (int i = 0; i < 20; ++i) Log.d("ERROR", e.getMessage());
         }
 
         Collections.sort(books, new Comparator<Book>() {

@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name" >Livros Grátis
+    <string name="app_name">Livros Grátis
     </string>
-    <string name="action_settings" >Settings
+    <string name="action_settings">Settings
     </string>
-    <string name="title_section1" >Catálogo
+    <string name="title_section1">Catálogo
     </string>
-    <string name="title_section2" >Meus Livros
+    <string name="title_section2">Meus Livros
     </string>
-    <string name="title_section3" >Sobre
+    <string name="title_section3">Sobre
     </string>
 
 </resources>

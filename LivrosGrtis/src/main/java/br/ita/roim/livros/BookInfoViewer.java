@@ -73,53 +73,52 @@ public class BookInfoViewer extends FragmentActivity {
         Callable<Void> downloader = new Callable<Void>() {
             @Override
             public Void call() throws Exception {
-            try {
-                isDownloading = true;
-                String path = "http://www.gutenberg.org/ebooks/" + Integer.toString(mBook.getID()) + ".epub.noimages";
+                try {
+                    isDownloading = true;
+                    String path = "http://www.gutenberg.org/ebooks/" + Integer.toString(mBook.getID()) + ".epub.noimages";
 
-                String FILENAME = "pg" + Integer.toString(mBook.getID()) + ".epub";
+                    String FILENAME = "pg" + Integer.toString(mBook.getID()) + ".epub";
 
-                URL u = new URL(path);
-                HttpURLConnection c = (HttpURLConnection) u.openConnection();
-                c.setRequestMethod("GET");
-                c.setDoOutput(true);
-                c.connect();
+                    URL u = new URL(path);
+                    HttpURLConnection c = (HttpURLConnection) u.openConnection();
+                    c.setRequestMethod("GET");
+                    c.setDoOutput(true);
+                    c.connect();
 
-                FileOutputStream f = openFileOutput(FILENAME, Context.MODE_PRIVATE);
+                    FileOutputStream f = openFileOutput(FILENAME, Context.MODE_PRIVATE);
 
-                InputStream in = c.getInputStream();
+                    InputStream in = c.getInputStream();
 
-                long total = c.getContentLength();
-                long current = 0;
+                    long total = c.getContentLength();
+                    long current = 0;
 
-                byte[] buffer = new byte[1024];
-                int len1 = 0;
-                while ( (len1 = in.read(buffer)) > 0 ) {
-                    f.write(buffer, 0, len1);
-                    current += len1;
-                    pb.setProgress((int) (100*current/total));
+                    byte[] buffer = new byte[1024];
+                    int len1 = 0;
+                    while ((len1 = in.read(buffer)) > 0) {
+                        f.write(buffer, 0, len1);
+                        current += len1;
+                        pb.setProgress((int) (100 * current / total));
+                    }
+
+                    f.close();
+
+                    DownloadedBooksDatabase.addBook(mBook);
+
+                    downloaded = true;
+                    read_book.setVisibility(View.VISIBLE);
+
+                } catch (MalformedURLException e) {
+                    Log.e("net", e.getMessage());
+                } catch (ProtocolException e) {
+                    Log.e("net", e.getMessage());
+                } catch (FileNotFoundException e) {
+                    Log.e("net", e.getMessage());
+                } catch (IOException e) {
+                    Log.e("net", e.getMessage());
+                } finally {
+                    isDownloading = false;
+                    return null;
                 }
-
-                f.close();
-
-                DownloadedBooksDatabase.addBook(mBook);
-
-                downloaded = true;
-                read_book.setVisibility(View.VISIBLE);
-
-            } catch (MalformedURLException e) {
-                Log.e("net", e.getMessage());
-            } catch (ProtocolException e) {
-                Log.e("net", e.getMessage());
-            } catch (FileNotFoundException e) {
-                Log.e("net", e.getMessage());
-            } catch (IOException e) {
-                Log.e("net", e.getMessage());
-            }
-            finally {
-                isDownloading = false;
-                return null;
-            }
             }
         };
 

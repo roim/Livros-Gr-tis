@@ -1,8 +1,5 @@
 package br.ita.roim.livros;
 
-import java.io.InputStream;
-import java.util.*;
-
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -19,6 +16,10 @@ import br.ita.roim.livros.fragments.BookListSectionFragment;
 import br.ita.roim.livros.fragments.DownloadedBooksSectionFragment;
 import br.ita.roim.livros.fragments.DummySectionFragment;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
     /**
@@ -29,12 +30,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      * intensive, it may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +88,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private void refresh() {
         if (mSectionsPagerAdapter != null) mSectionsPagerAdapter.refresh();
     }
-    
+
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         // When the given tab is selected, switch to the corresponding page in
@@ -109,8 +110,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-        private Context mContext;
-        private ArrayList<Book> mBooks;
+        private final Context mContext;
+        private final ArrayList<Book> mBooks;
         private DownloadedBooksSectionFragment downloadedFragment;
 
         public SectionsPagerAdapter(Context c, ArrayList<Book> books, FragmentManager fm) {
@@ -165,13 +166,14 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     private GutenbergPtParser gpp;
+
     private void loadBooks() {
         InputStream is = this.getResources().openRawResource(R.raw.pt);
         gpp = new GutenbergPtParser(is);
         gpp.parse();
     }
 
-    public ArrayList<Book> getBooks() {
+    ArrayList<Book> getBooks() {
         return gpp.getBooks();
     }
 }

@@ -9,7 +9,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.ScrollView;
-import br.ita.roim.livros.R;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
@@ -87,14 +86,14 @@ public class BookReader extends FragmentActivity {
                 // Scrolling doesn't work while the scrollView is being prepared
                 //   but apparently we don't know when it's gonna be ready for scrolling!
                 //   Well, one day it will be, so let's keep trying until it works.
-                while(true) {
+                while (true) {
                     int pos = scrollView.getScrollY();
                     scrollView.scrollBy(0, 1);
                     if (pos != scrollView.getScrollY()) {
                         scrollView.scrollBy(0, -1);
                         break;
                     }
-                    scrollView.scrollBy(0,-1);
+                    scrollView.scrollBy(0, -1);
                 }
 
                 navigateTo(wanted_chapter, wanted_page);
@@ -107,11 +106,11 @@ public class BookReader extends FragmentActivity {
     private void navigateTo(int dest_chapter) {
         chapter = dest_chapter;
         try {
-           webView.loadData(new String(res.get(dest_chapter).getData()), "text/html; charset=UTF-8", null);
+            webView.loadData(new String(res.get(dest_chapter).getData()), "text/html; charset=UTF-8", null);
         } catch (IOException e) {
             Log.e("reader", e.getMessage());
         }
-        scrollView.scrollTo(0,0);
+        scrollView.scrollTo(0, 0);
         page = 0;
     }
 
@@ -128,7 +127,7 @@ public class BookReader extends FragmentActivity {
         page--;
 
         if (scrollView.getScrollY() == pos && chapter != 0) {
-            navigateTo(chapter-1);
+            navigateTo(chapter - 1);
         }
     }
 
@@ -138,7 +137,7 @@ public class BookReader extends FragmentActivity {
         page++;
 
         if (scrollView.getScrollY() == pos && chapter + 1 < res.size()) {
-            navigateTo(chapter+1);
+            navigateTo(chapter + 1);
         }
     }
 

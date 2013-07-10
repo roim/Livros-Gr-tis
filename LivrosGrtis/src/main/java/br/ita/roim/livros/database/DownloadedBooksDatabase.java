@@ -16,10 +16,10 @@ public class DownloadedBooksDatabase extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
     private static final String DOWNLOADED_TABLE_NAME = "DOWNLOADED";
     private static final String DOWNLOADED_TABLE_CREATE = "CREATE TABLE " + DOWNLOADED_TABLE_NAME + " (" +
-                    "TITLE    TEXT, " +
-                    "ID       INTEGER PRIMARY KEY, " +
-                    "LANGUAGE TEXT, " +
-                    "AUTHOR   TEXT);";
+            "TITLE    TEXT, " +
+            "ID       INTEGER PRIMARY KEY, " +
+            "LANGUAGE TEXT, " +
+            "AUTHOR   TEXT);";
 
     private static DownloadedBooksDatabase singleton;
 
@@ -27,9 +27,8 @@ public class DownloadedBooksDatabase extends SQLiteOpenHelper {
         return singleton;
     }
 
-    public static DownloadedBooksDatabase initialize(Context c) {
+    public static void initialize(Context c) {
         singleton = new DownloadedBooksDatabase(c);
-        return singleton;
     }
 
     public static void addBook(Book book) {
@@ -49,9 +48,9 @@ public class DownloadedBooksDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = singleton.getReadableDatabase();
 
         Cursor cursor = db.query("DOWNLOADED",
-                new String[] { "TITLE", "ID", "LANGUAGE", "AUTHOR" },
+                new String[]{"TITLE", "ID", "LANGUAGE", "AUTHOR"},
                 "ID=?",
-                new String[] { String.valueOf(id) },
+                new String[]{String.valueOf(id)},
                 null, null, null, null);
 
         if (cursor != null) cursor.moveToFirst();
@@ -87,7 +86,7 @@ public class DownloadedBooksDatabase extends SQLiteOpenHelper {
         return books;
     }
 
-    public DownloadedBooksDatabase(Context context) {
+    private DownloadedBooksDatabase(Context context) {
         super(context, "LIVROSGRTS", null, DATABASE_VERSION);
     }
 
