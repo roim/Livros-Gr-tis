@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.*;
 import br.ita.roim.livros.android.extensions.AlphabeticalAdapter;
 import br.ita.roim.livros.database.Book;
+import br.ita.roim.livros.database.DownloadedBooksDatabase;
 import br.ita.roim.livros.database.GutenbergPtParser;
 import br.ita.roim.livros.reader.BookReader;
 
@@ -53,6 +54,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         // TODO preload books into a database
         loadBooks();
 
+        // Initialize SQLite db
+        DownloadedBooksDatabase.initialize(this);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the app.
         mSectionsPagerAdapter = new SectionsPagerAdapter(this, getBooks(), getSupportFragmentManager());
@@ -67,6 +71,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {
+                if (position == 1) refresh();
                 actionBar.setSelectedNavigationItem(position);
             }
         });
@@ -84,11 +89,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+    private void refresh() {
+        if (mSectionsPagerAdapter != null) mSectionsPagerAdapter.refresh();
     }
     
     @Override
@@ -114,6 +116,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
         private Context mContext;
         private ArrayList<Book> mBooks;
+        private DownloadedBooksSectionFragment downloadedFragment;
 
         public SectionsPagerAdapter(Context c, ArrayList<Book> books, FragmentManager fm) {
             super(fm);
@@ -129,6 +132,9 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             Fragment fragment;
             if (position == 0) {
                 fragment = new BookListSectionFragment(mContext, mBooks);
+            } else if (position == 1) {
+                downloadedFragment = new DownloadedBooksSectionFragment(mContext);
+                fragment = downloadedFragment;
             } else {
                 fragment = new DummySectionFragment(mContext);
             }
@@ -136,6 +142,10 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             args.putInt(BookListSectionFragment.ARG_SECTION_NUMBER, position + 1);
             fragment.setArguments(args);
             return fragment;
+        }
+
+        public void refresh() {
+            if (downloadedFragment != null) downloadedFragment.refresh();
         }
 
         @Override
@@ -160,10 +170,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     }
 
     public static class BookListSectionFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+
         public static final String ARG_SECTION_NUMBER = "section_number";
         private Context mContext;
         private ArrayList<Book> mBooks;
@@ -174,8 +181,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false);
 
             ListView list = (ListView) rootView.findViewById(R.id.viewBooks);
@@ -191,17 +197,51 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
             });
 
-            //TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
-            //dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            return rootView;
+        }
+    }
+
+    public static class DownloadedBooksSectionFragment extends Fragment {
+
+        public static final String ARG_SECTION_NUMBER = "section_number";
+        private Context mContext;
+        private ArrayList<Book> mBooks;
+        private View rootView;
+
+        public DownloadedBooksSectionFragment(Context c) {
+            mContext = c;
+            mBooks = DownloadedBooksDatabase.getAllBooks();
+        }
+
+        public void refresh() {
+            mBooks = DownloadedBooksDatabase.getAllBooks();
+
+            ListView list = (ListView) rootView.findViewById(R.id.viewBooks);
+            list.setAdapter(new AlphabeticalAdapter(mContext, R.layout.list_element, mBooks));
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+            rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false);
+
+            ListView list = (ListView) rootView.findViewById(R.id.viewBooks);
+            list.setAdapter(new AlphabeticalAdapter(mContext, R.layout.list_element, mBooks));
+
+            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent myIntent = new Intent(mContext, BookReader.class);
+                    myIntent.putExtra("book", mBooks.get(position).getID());
+                    startActivity(myIntent);
+                }
+            });
+
             return rootView;
         }
     }
 
     public static class DummySectionFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+
         public static final String ARG_SECTION_NUMBER = "section_number";
         private Context mContext;
 

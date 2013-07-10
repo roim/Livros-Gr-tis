@@ -4,12 +4,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import br.ita.roim.livros.R;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
@@ -24,12 +23,13 @@ import java.util.List;
  * through the "book" parameter of the intent.
  */
 public class BookReader extends FragmentActivity {
-    private String name;
+    private int id;
     private int chapter;
     private int page;
 
+    private String FILE_NAME;
     private ScrollView scrollView;
-    private TextView textView;
+    private WebView webView;
     private List<Resource> res;
 
     @Override
@@ -38,16 +38,21 @@ public class BookReader extends FragmentActivity {
         setContentView(R.layout.reader);
 
         Intent usedIntent = getIntent();
-        name = usedIntent.getStringExtra("book");
+        id = usedIntent.getIntExtra("book", -1);
+
+        if (id == -1) {
+            Log.e("reader", "didn't receive ID");
+        }
 
         InputStream epubInputStream;
         Book book = null;
+        FILE_NAME = "pg" + Integer.toString(id) + ".epub";
 
         try {
-            epubInputStream = getResources().openRawResource(R.raw.pg1661);
+            epubInputStream = openFileInput(FILE_NAME);
             book = new EpubReader().readEpub(epubInputStream);
         } catch (IOException e) {
-            Log.d("ERROR", e.getMessage());
+            Log.e("reader", e.getMessage());
         }
 
         res = book.getContents();
@@ -56,18 +61,17 @@ public class BookReader extends FragmentActivity {
 
         // Hack to disable scrolling.
         scrollView.setOnTouchListener(new View.OnTouchListener() {
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 return true;
             }
         });
 
-        textView = (TextView) findViewById(R.id.textView);
+        webView = (WebView) findViewById(R.id.textView);
 
         SharedPreferences pref = getPreferences(MODE_PRIVATE);
-        int wanted_chapter = pref.getInt(name + "chapter", 0);
-        int wanted_page = pref.getInt(name + "page", 0);
+        int wanted_chapter = pref.getInt(FILE_NAME + "chapter", 0);
+        int wanted_page = pref.getInt(FILE_NAME + "page", 0);
 
         navigateTo(wanted_chapter, wanted_page);
     }
@@ -75,8 +79,10 @@ public class BookReader extends FragmentActivity {
     private void navigateTo(int dest_chapter) {
         chapter = dest_chapter;
         try {
-            textView.setText(Html.fromHtml( new String( res.get(dest_chapter).getData() )));
-        } catch (IOException e) {}
+           webView.loadData(new String(res.get(dest_chapter).getData()), "text/html; charset=UTF-8", null);
+        } catch (IOException e) {
+            Log.e("reader", e.getMessage());
+        }
         scrollView.scrollTo(0,0);
         page = 0;
     }
@@ -90,7 +96,7 @@ public class BookReader extends FragmentActivity {
 
     public void backPage(View view) {
         int pos = scrollView.getScrollY();
-        scrollView.scrollBy(0, -scrollView.getHeight());
+        scrollView.scrollBy(0, -scrollView.getHeight() + 10);
         page--;
 
         if (scrollView.getScrollY() == pos && chapter != 0) {
@@ -100,7 +106,7 @@ public class BookReader extends FragmentActivity {
 
     public void advancePage(View view) {
         int pos = scrollView.getScrollY();
-        scrollView.scrollBy(0, scrollView.getHeight());
+        scrollView.scrollBy(0, scrollView.getHeight() - 10);
         page++;
 
         if (scrollView.getScrollY() == pos && chapter + 1 < res.size()) {
@@ -113,8 +119,8 @@ public class BookReader extends FragmentActivity {
         SharedPreferences pref = getPreferences(MODE_PRIVATE);
 
         SharedPreferences.Editor editor = pref.edit();
-        editor.putInt(name + "chapter", chapter);
-        editor.putInt(name + "page", page);
+        editor.putInt(FILE_NAME + "chapter", chapter);
+        editor.putInt(FILE_NAME + "page", page);
         editor.commit();
 
         super.onStop();
