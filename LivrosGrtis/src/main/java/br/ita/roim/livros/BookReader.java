@@ -1,4 +1,4 @@
-package br.ita.roim.livros.reader;
+package br.ita.roim.livros;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +17,9 @@ import nl.siegmann.epublib.epub.EpubReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Activity to read a book in epub format. It reads the book passed as input
@@ -26,11 +29,14 @@ public class BookReader extends FragmentActivity {
     private int id;
     private int chapter;
     private int page;
+    private int wanted_chapter;
+    private int wanted_page;
 
     private String FILE_NAME;
     private ScrollView scrollView;
     private WebView webView;
     private List<Resource> res;
+    private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,10 +76,32 @@ public class BookReader extends FragmentActivity {
         webView = (WebView) findViewById(R.id.textView);
 
         SharedPreferences pref = getPreferences(MODE_PRIVATE);
-        int wanted_chapter = pref.getInt(FILE_NAME + "chapter", 0);
-        int wanted_page = pref.getInt(FILE_NAME + "page", 0);
+        wanted_chapter = pref.getInt(FILE_NAME + "chapter", 0);
+        wanted_page = pref.getInt(FILE_NAME + "page", 0);
 
-        navigateTo(wanted_chapter, wanted_page);
+        navigateTo(wanted_chapter, 0);
+
+        Callable<Void> navigator = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                // Scrolling doesn't work while the scrollView is being prepared
+                //   but apparently we don't know when it's gonna be ready for scrolling!
+                //   Well, one day it will be, so let's keep trying until it works.
+                while(true) {
+                    int pos = scrollView.getScrollY();
+                    scrollView.scrollBy(0, 1);
+                    if (pos != scrollView.getScrollY()) {
+                        scrollView.scrollBy(0, -1);
+                        break;
+                    }
+                    scrollView.scrollBy(0,-1);
+                }
+
+                navigateTo(wanted_chapter, wanted_page);
+                return null;
+            }
+        };
+        executor.submit(navigator);
     }
 
     private void navigateTo(int dest_chapter) {
@@ -89,7 +117,7 @@ public class BookReader extends FragmentActivity {
 
     private void navigateTo(int dest_chapter, int dest_page) {
         navigateTo(dest_chapter);
-        for (int i = 1; i < dest_page; i++) {
+        for (int i = 0; i < dest_page; i++) {
             advancePage(null);
         }
     }
@@ -116,13 +144,22 @@ public class BookReader extends FragmentActivity {
 
     @Override
     public void onStop() {
+        persistState();
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
+    private void persistState() {
         SharedPreferences pref = getPreferences(MODE_PRIVATE);
 
         SharedPreferences.Editor editor = pref.edit();
         editor.putInt(FILE_NAME + "chapter", chapter);
         editor.putInt(FILE_NAME + "page", page);
         editor.commit();
-
-        super.onStop();
     }
 }

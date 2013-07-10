@@ -6,23 +6,18 @@ import java.util.*;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.*;
-import br.ita.roim.livros.android.extensions.AlphabeticalAdapter;
 import br.ita.roim.livros.database.Book;
 import br.ita.roim.livros.database.DownloadedBooksDatabase;
 import br.ita.roim.livros.database.GutenbergPtParser;
-import br.ita.roim.livros.reader.BookReader;
+import br.ita.roim.livros.fragments.BookListSectionFragment;
+import br.ita.roim.livros.fragments.DownloadedBooksSectionFragment;
+import br.ita.roim.livros.fragments.DummySectionFragment;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 
@@ -136,7 +131,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 downloadedFragment = new DownloadedBooksSectionFragment(mContext);
                 fragment = downloadedFragment;
             } else {
-                fragment = new DummySectionFragment(mContext);
+                fragment = new DummySectionFragment();
             }
             Bundle args = new Bundle();
             args.putInt(BookListSectionFragment.ARG_SECTION_NUMBER, position + 1);
@@ -166,94 +161,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                     return getString(R.string.title_section3).toUpperCase(l);
             }
             return null;
-        }
-    }
-
-    public static class BookListSectionFragment extends Fragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
-        private Context mContext;
-        private ArrayList<Book> mBooks;
-
-        public BookListSectionFragment(Context c, ArrayList<Book> books) {
-            mContext = c;
-            mBooks = books;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false);
-
-            ListView list = (ListView) rootView.findViewById(R.id.viewBooks);
-
-            list.setAdapter(new AlphabeticalAdapter(mContext, R.layout.list_element, mBooks));
-
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent myIntent = new Intent(mContext, BookInfoViewer.class);
-                    myIntent.putExtra("book", mBooks.get(position));
-                    startActivity(myIntent);
-                }
-            });
-
-            return rootView;
-        }
-    }
-
-    public static class DownloadedBooksSectionFragment extends Fragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
-        private Context mContext;
-        private ArrayList<Book> mBooks;
-        private View rootView;
-
-        public DownloadedBooksSectionFragment(Context c) {
-            mContext = c;
-            mBooks = DownloadedBooksDatabase.getAllBooks();
-        }
-
-        public void refresh() {
-            mBooks = DownloadedBooksDatabase.getAllBooks();
-
-            ListView list = (ListView) rootView.findViewById(R.id.viewBooks);
-            list.setAdapter(new AlphabeticalAdapter(mContext, R.layout.list_element, mBooks));
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false);
-
-            ListView list = (ListView) rootView.findViewById(R.id.viewBooks);
-            list.setAdapter(new AlphabeticalAdapter(mContext, R.layout.list_element, mBooks));
-
-            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    Intent myIntent = new Intent(mContext, BookReader.class);
-                    myIntent.putExtra("book", mBooks.get(position).getID());
-                    startActivity(myIntent);
-                }
-            });
-
-            return rootView;
-        }
-    }
-
-    public static class DummySectionFragment extends Fragment {
-
-        public static final String ARG_SECTION_NUMBER = "section_number";
-        private Context mContext;
-
-        public DummySectionFragment(Context c) {
-            mContext = c;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_dummy, container, false);
-            return rootView;
         }
     }
 

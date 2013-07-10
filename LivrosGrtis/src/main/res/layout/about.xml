@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Este é um aplicativo desenvolvido por alunos do Instituto Tecnológico de Aeronáutica, como trabalho na disciplina de Programação Orientada a Objetos."
+            android:id="@+id/textViewr1" android:layout_gravity="left|center_vertical"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="O aplicativo em si não possui nenhum livro, todos eles são baixados a partir de um repositório gratuito que disponibiliza livros no domínimo público."
+            android:id="@+id/textViewr2" android:layout_gravity="left|center_vertical"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="O repositório mencionado pode ser acessado em: http://www.gutenberg.org/"
+            android:id="@+id/textViewr3" android:layout_gravity="left|center_vertical"/>
+
+</LinearLayout>
