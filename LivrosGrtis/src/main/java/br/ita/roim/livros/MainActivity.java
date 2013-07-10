@@ -6,6 +6,7 @@ import java.util.*;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -20,6 +21,7 @@ import android.widget.*;
 import br.ita.roim.livros.android.extensions.AlphabeticalAdapter;
 import br.ita.roim.livros.database.Book;
 import br.ita.roim.livros.database.GutenbergPtParser;
+import br.ita.roim.livros.reader.BookReader;
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
 

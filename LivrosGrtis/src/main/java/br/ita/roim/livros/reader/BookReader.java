@@ -1,14 +1,16 @@
-package br.ita.roim.livros;
+package br.ita.roim.livros.reader;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import br.ita.roim.livros.R;
 import nl.siegmann.epublib.domain.Book;
 import nl.siegmann.epublib.domain.Resource;
 import nl.siegmann.epublib.epub.EpubReader;
@@ -42,10 +44,10 @@ public class BookReader extends FragmentActivity {
         Book book = null;
 
         try {
-            epubInputStream = openFileInput(name);
+            epubInputStream = getResources().openRawResource(R.raw.pg1661);
             book = new EpubReader().readEpub(epubInputStream);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.d("ERROR", e.getMessage());
         }
 
         res = book.getContents();
@@ -114,5 +116,7 @@ public class BookReader extends FragmentActivity {
         editor.putInt(name + "chapter", chapter);
         editor.putInt(name + "page", page);
         editor.commit();
+
+        super.onStop();
     }
 }

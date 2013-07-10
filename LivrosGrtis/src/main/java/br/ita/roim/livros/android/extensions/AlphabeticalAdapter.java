@@ -45,8 +45,8 @@ public class AlphabeticalAdapter extends ArrayAdapter<Book> implements SectionIn
 
     public int getSectionForPosition(int position)
     {
-        String firstletter = mData.get(position).toString().substring(0, 1);
-        return sectionList.indexOf(firstletter);
+        String firstLetter = mData.get(position).toString().substring(0, 1);
+        return sectionList.indexOf(firstLetter);
     }
 
     public Object[] getSections()
