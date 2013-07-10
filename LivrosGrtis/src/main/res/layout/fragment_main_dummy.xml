@@ -10,5 +10,5 @@
             android:fadingEdge="vertical"
             android:cacheColorHint="#00000000"
             android:fastScrollEnabled="true"
-            android:padding="2dp" />
+            android:padding="2dp"/>
 </LinearLayout>

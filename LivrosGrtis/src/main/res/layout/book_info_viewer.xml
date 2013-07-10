@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="left|center_vertical">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Livro: "
+                android:id="@+id/textView" android:layout_gravity="center_horizontal|top"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:text="New Text"
+                android:id="@+id/book_title"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="left|center_vertical">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Autor: "
+                android:id="@+id/textView1" android:layout_gravity="center_horizontal|top"/>
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Text"
+                android:id="@+id/book_author" android:layout_gravity="center_horizontal|bottom"/>
+    </LinearLayout>
+    <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Baixar Livro"
+                android:id="@+id/download_book" android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
+                android:layout_marginTop="17dp"/>
+        <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/progressBar"
+                android:layout_centerHorizontal="true" android:layout_centerVertical="true"/>
+    </RelativeLayout>
+</LinearLayout>

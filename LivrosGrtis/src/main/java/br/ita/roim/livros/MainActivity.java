@@ -181,6 +181,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             ListView list = (ListView) rootView.findViewById(R.id.viewBooks);
 
             list.setAdapter(new AlphabeticalAdapter(mContext, R.layout.list_element, mBooks));
+
+            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent myIntent = new Intent(mContext, BookInfoViewer.class);
+                    myIntent.putExtra("book", mBooks.get(position));
+                    startActivity(myIntent);
+                }
+            });
+
             //TextView dummyTextView = (TextView) rootView.findViewById(R.id.section_label);
             //dummyTextView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
             return rootView;

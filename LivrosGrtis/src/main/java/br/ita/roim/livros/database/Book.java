@@ -1,6 +1,8 @@
 package br.ita.roim.livros.database;
 
-public class Book {
+import java.io.Serializable;
+
+public class Book implements Serializable {
     private String name;
     private String author;
     private String language;
