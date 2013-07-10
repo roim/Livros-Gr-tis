@@ -61,4 +61,9 @@
                 android:layout_alignLeft="@+id/download_book" android:layout_below="@+id/download_book"
                 android:layout_alignParentRight="true"/>
     </LinearLayout>
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ler Livro"
+            android:id="@+id/read_book" android:layout_gravity="center" android:onClick="onReadBook"/>
 </LinearLayout>

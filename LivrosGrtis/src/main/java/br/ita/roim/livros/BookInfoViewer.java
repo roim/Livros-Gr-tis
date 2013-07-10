@@ -1,21 +1,22 @@
 package br.ita.roim.livros;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import br.ita.roim.livros.database.Book;
 import br.ita.roim.livros.database.DownloadedBooksDatabase;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
@@ -28,9 +29,10 @@ public class BookInfoViewer extends FragmentActivity {
 
     private Book mBook;
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
-    private DownloadedBooksDatabase db;
     private boolean downloaded = false;
     private boolean isDownloading = false;
+
+    private Button read_book;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,10 @@ public class BookInfoViewer extends FragmentActivity {
         ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
 
         if (DownloadedBooksDatabase.getBook(mBook.getID()) != null) downloaded = true;
+        if (downloaded) pb.setProgress(100);
+
+        read_book = (Button) findViewById(R.id.read_book);
+        if (!downloaded) read_book.setVisibility(View.INVISIBLE);
     }
 
     public void onClickDownload(View v) {
@@ -99,6 +105,7 @@ public class BookInfoViewer extends FragmentActivity {
                 DownloadedBooksDatabase.addBook(mBook);
 
                 downloaded = true;
+                read_book.setVisibility(View.VISIBLE);
 
             } catch (MalformedURLException e) {
                 Log.e("net", e.getMessage());
@@ -117,5 +124,11 @@ public class BookInfoViewer extends FragmentActivity {
         };
 
         executor.submit(downloader);
+    }
+
+    public void onReadBook(View view) {
+        Intent myIntent = new Intent(this, BookReader.class);
+        myIntent.putExtra("book", mBook.getID());
+        startActivity(myIntent);
     }
 }
